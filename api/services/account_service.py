@@ -674,7 +674,7 @@ class TenantService:
         return (
             db.session.query(Tenant)
             .join(TenantAccountJoin, Tenant.id == TenantAccountJoin.tenant_id)
-            # .filter(TenantAccountJoin.account_id == account.id, Tenant.status == TenantStatus.NORMAL)
+            .filter(TenantAccountJoin.account_id == account.id, Tenant.status == TenantStatus.NORMAL)
             .filter(TenantAccountJoin.account_id == account.id)
             .all()
         )
@@ -860,6 +860,18 @@ class TenantService:
         tenant = Tenant.query.filter(Tenant.id == tenant_id).one_or_404()
 
         return cast(dict, tenant.custom_config_dict)
+    
+    @staticmethod
+    def get_tenants_by_names(tenant_names: list[str]) -> list[Tenant]:
+        """Get tenants whose names are in the provided list"""
+        if not tenant_names:
+            return []
+        
+        return (
+            db.session.query(Tenant)
+            .filter(Tenant.name.in_(tenant_names))
+            .all()
+        )
 
 
 class RegisterService:

@@ -1,3 +1,4 @@
+from typing import Optional
 import jwt
 from werkzeug.exceptions import Unauthorized
 
@@ -11,7 +12,7 @@ class PassportService:
     def issue(self, payload):
         return jwt.encode(payload, self.sk, algorithm="HS256")
 
-    def verify(self, token, key):
+    def verify(self, token, key: Optional[str] = None):
         try:
             if key:
                 return jwt.decode(token, key, algorithms=["HS256"])

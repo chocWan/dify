@@ -109,12 +109,22 @@ class LoginWithTokenApi(Resource):
         args = parser.parse_args()
         token = args["token"]
         decoded = PassportService().verify(token, dify_config.XTEST_JWT_SECRET_KEY)
-        email = decoded.get("user_bill_number")
+        email = decoded.get("email")
+        name = decoded.get("user_bill_number")        
         account = AccountService.load_user_by_email(email)
         # create account if not exists
         if not account:
-            account = AccountService.create_account(email, email, "en-US", email)
+            account = AccountService.create_account(email, name, "en-US", email)
             # create personal workspace
+            TenantService.create_owner_tenant_if_not_exist(account=account)    
+        # add default workspace if not exists
+        defalut_workspace_names = ['CSW QA']
+        tenants = TenantService.get_join_tenants(account=account)
+        missing_workspace_names = lambda default, tenant_list: list(set(default) - {t.name for t in tenant_list})
+        need_add_workspace_names = missing_workspace_names(defalut_workspace_names, tenants)
+        need_add_tenants = TenantService.get_tenants_by_names(need_add_workspace_names)
+        for tenant in need_add_tenants:
+            TenantService.create_tenant_member(tenant,account)       
 
         # SELF_HOSTED only have one workspace
         tenants = TenantService.get_join_tenants(account)
