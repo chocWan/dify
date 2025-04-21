@@ -11,8 +11,10 @@ class PassportService:
     def issue(self, payload):
         return jwt.encode(payload, self.sk, algorithm="HS256")
 
-    def verify(self, token):
+    def verify(self, token, key):
         try:
+            if key:
+                return jwt.decode(token, key, algorithms=["HS256"])
             return jwt.decode(token, self.sk, algorithms=["HS256"])
         except jwt.exceptions.InvalidSignatureError:
             raise Unauthorized("Invalid token signature.")

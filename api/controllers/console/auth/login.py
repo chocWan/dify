@@ -4,6 +4,7 @@ import flask_login  # type: ignore
 from flask import request
 from flask_restful import Resource, reqparse  # type: ignore
 
+from libs.passport import PassportService
 import services
 from configs import dify_config
 from constants.languages import languages
@@ -96,6 +97,37 @@ class LoginApi(Resource):
         AccountService.reset_login_error_rate_limit(args["email"])
         return {"result": "success", "data": token_pair.model_dump()}
 
+
+class LoginWithTokenApi(Resource):
+    """Resource for user login."""
+
+    @setup_required
+    def post(self):
+        """Authenticate user and login."""
+        parser = reqparse.RequestParser()
+        parser.add_argument("token", type=str, required=False, default="en-US", location="json")
+        args = parser.parse_args()
+        token = args["token"]
+        decoded = PassportService().verify(token,dify_config.XTEST_JWT_SECRET_KEY)
+        email = decoded.get("user_bill_number")
+        account = AccountService.load_user_by_email(email)  
+        # create account if not exists
+        if not account:
+            account = AccountService.create_account(email,email,"en-US",email)  
+            # create personal workspace
+            
+            
+        # SELF_HOSTED only have one workspace
+        tenants = TenantService.get_join_tenants(account)
+        if len(tenants) == 0:
+            return {
+                "result": "fail",
+                "data": "workspace not found, please contact system admin to invite you to join in a workspace",
+            }
+
+        token_pair = AccountService.login(account=account, ip_address=extract_remote_ip(request))
+        AccountService.reset_login_error_rate_limit(args["email"])
+        return {"result": "success", "data": token_pair.model_dump()}
 
 class LogoutApi(Resource):
     @setup_required
@@ -232,6 +264,7 @@ class RefreshTokenApi(Resource):
 
 
 api.add_resource(LoginApi, "/login")
+api.add_resource(LoginWithTokenApi, "/login/token")
 api.add_resource(LogoutApi, "/logout")
 api.add_resource(EmailCodeLoginSendEmailApi, "/email-code-login")
 api.add_resource(EmailCodeLoginApi, "/email-code-login/validity")

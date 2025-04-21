@@ -127,6 +127,35 @@ class AccountService:
             db.session.commit()
 
         return cast(Account, account)
+    
+    @staticmethod
+    def load_user_by_email(email: str) -> None | Account:
+        account = db.session.query(Account).filter_by(email=email).first()
+        if not account:
+            return None
+
+        if account.status == AccountStatus.BANNED.value:
+            raise Unauthorized("Account is banned.")
+
+        current_tenant = TenantAccountJoin.query.filter_by(account_id=account.id, current=True).first()
+        if current_tenant:
+            account.current_tenant_id = current_tenant.tenant_id
+        else:
+            available_ta = (
+                TenantAccountJoin.query.filter_by(account_id=account.id).order_by(TenantAccountJoin.id.asc()).first()
+            )
+            if not available_ta:
+                return None
+
+            account.current_tenant_id = available_ta.tenant_id
+            available_ta.current = True
+            db.session.commit()
+
+        if datetime.now(UTC).replace(tzinfo=None) - account.last_active_at > timedelta(minutes=10):
+            account.last_active_at = datetime.now(UTC).replace(tzinfo=None)
+            db.session.commit()
+
+        return cast(Account, account)
 
     @staticmethod
     def get_account_jwt_token(account: Account) -> str:
@@ -645,7 +674,8 @@ class TenantService:
         return (
             db.session.query(Tenant)
             .join(TenantAccountJoin, Tenant.id == TenantAccountJoin.tenant_id)
-            .filter(TenantAccountJoin.account_id == account.id, Tenant.status == TenantStatus.NORMAL)
+            # .filter(TenantAccountJoin.account_id == account.id, Tenant.status == TenantStatus.NORMAL)
+            .filter(TenantAccountJoin.account_id == account.id)
             .all()
         )
 
