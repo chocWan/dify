@@ -127,7 +127,7 @@ class AccountService:
             db.session.commit()
 
         return cast(Account, account)
-    
+
     @staticmethod
     def load_user_by_email(email: str) -> None | Account:
         account = db.session.query(Account).filter_by(email=email).first()

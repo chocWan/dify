@@ -4,7 +4,6 @@ import flask_login  # type: ignore
 from flask import request
 from flask_restful import Resource, reqparse  # type: ignore
 
-from libs.passport import PassportService
 import services
 from configs import dify_config
 from constants.languages import languages
@@ -26,6 +25,7 @@ from controllers.console.error import (
 from controllers.console.wraps import setup_required
 from events.tenant_event import tenant_was_created
 from libs.helper import email, extract_remote_ip
+from libs.passport import PassportService
 from libs.password import valid_password
 from models.account import Account
 from services.account_service import AccountService, RegisterService, TenantService
@@ -108,15 +108,14 @@ class LoginWithTokenApi(Resource):
         parser.add_argument("token", type=str, required=False, default="en-US", location="json")
         args = parser.parse_args()
         token = args["token"]
-        decoded = PassportService().verify(token,dify_config.XTEST_JWT_SECRET_KEY)
+        decoded = PassportService().verify(token, dify_config.XTEST_JWT_SECRET_KEY)
         email = decoded.get("user_bill_number")
-        account = AccountService.load_user_by_email(email)  
+        account = AccountService.load_user_by_email(email)
         # create account if not exists
         if not account:
-            account = AccountService.create_account(email,email,"en-US",email)  
+            account = AccountService.create_account(email, email, "en-US", email)
             # create personal workspace
-            
-            
+
         # SELF_HOSTED only have one workspace
         tenants = TenantService.get_join_tenants(account)
         if len(tenants) == 0:
@@ -128,6 +127,7 @@ class LoginWithTokenApi(Resource):
         token_pair = AccountService.login(account=account, ip_address=extract_remote_ip(request))
         AccountService.reset_login_error_rate_limit(args["email"])
         return {"result": "success", "data": token_pair.model_dump()}
+
 
 class LogoutApi(Resource):
     @setup_required
