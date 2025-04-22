@@ -872,6 +872,18 @@ class TenantService:
             .filter(Tenant.name.in_(tenant_names))
             .all()
         )
+    
+    @staticmethod
+    def get_tenant_by_name(tenant_name: str) -> list[Tenant]:
+        """Get tenants whose names are in the provided list"""
+        if not tenant_name:
+            return []
+        
+        return (
+            db.session.query(Tenant)
+            .filter(Tenant.name == tenant_name)
+            .first()
+        )
 
 
 class RegisterService:

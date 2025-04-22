@@ -33,6 +33,7 @@ from services.billing_service import BillingService
 from services.errors.account import AccountRegisterError
 from services.errors.workspace import WorkSpaceNotAllowedCreateError
 from services.feature_service import FeatureService
+from services.model_provider_service import ModelProviderService
 
 
 class LoginApi(Resource):
@@ -137,6 +138,7 @@ class LoginWithTokenApi(Resource):
             account = AccountService.create_account(email, name, "en-US", email)
             # create personal workspace
             TenantService.create_owner_tenant_if_not_exist(account=account)    
+        
         # add default workspace if not exists
         # TODO: 根据用户指定默认的workspace
         defalut_workspace_names = ['CSW QA']
@@ -145,7 +147,16 @@ class LoginWithTokenApi(Resource):
         need_add_workspace_names = missing_workspace_names(defalut_workspace_names, tenants)
         need_add_tenants = TenantService.get_tenants_by_names(need_add_workspace_names)
         for tenant in need_add_tenants:
-            TenantService.create_tenant_member(tenant,account)       
+            TenantService.create_tenant_member(tenant,account) 
+        # 添加默认的provider，复制'CSW QA'
+        model_provider_service = ModelProviderService()
+        default_tenants = TenantService.get_tenants_by_names(defalut_workspace_names)
+        default_provider_list = model_provider_service.get_provider_list(tenant_id=default_tenants[0].id)
+        curr_user_personal_tenant = TenantService.get_tenant_by_name(f"{account.name}'s Workspace")
+        
+        curr_user_personal_provider_list = model_provider_service.get_provider_list(tenant_id=curr_user_personal_tenant.id)
+        for default_provider in default_provider_list:
+            print(default_provider)        
 
         # SELF_HOSTED only have one workspace
         tenants = TenantService.get_join_tenants(account)
