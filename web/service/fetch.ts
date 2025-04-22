@@ -94,7 +94,7 @@ export function getAccessToken(isPublicAPI?: boolean) {
     return accessTokenJson[sharedToken]
   }
   else {
-    return localStorage.getItem('console_token') || ''
+    return localStorage.getItem('dify_console_token') || ''
   }
 }
 

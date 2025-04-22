@@ -72,8 +72,8 @@ export default function MailAndPasswordAuth({ isInvite, isEmailSetup, allowRegis
           router.replace(`/signin/invite-settings?${searchParams.toString()}`)
         }
         else {
-          localStorage.setItem('console_token', res.data.access_token)
-          localStorage.setItem('refresh_token', res.data.refresh_token)
+          localStorage.setItem('dify_console_token', res.data.access_token)
+          localStorage.setItem('dify_refresh_token', res.data.refresh_token)
           router.replace('/apps')
         }
       }
