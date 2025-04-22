@@ -105,9 +105,28 @@ class LoginWithTokenApi(Resource):
     def post(self):
         """Authenticate user and login."""
         parser = reqparse.RequestParser()
-        parser.add_argument("token", type=str, required=False, default="en-US", location="json")
+        # parser.add_argument("token", type=str, required=False, default="en-US", location="json")
+        # args = parser.parse_args()
+        # token = args["token"]
+        
+        # look for token in the HTTP headers
+        parser.add_argument(
+            'Authorization',
+            type=str,
+            required=True,
+            location='headers',
+            help='Token must be provided in the Authorization header, e.g. "Bearer <token>"'
+        )
         args = parser.parse_args()
-        token = args["token"]
+        auth_header = args['Authorization']
+
+        # if you're using a Bearer scheme, strip off the prefix
+        if auth_header.lower().startswith('bearer '):
+            token = auth_header.split(' ', 1)[1]
+        else:
+            token = auth_header
+        
+        
         decoded = PassportService().verify(token, dify_config.XTEST_JWT_SECRET_KEY)
         user_bill_number = decoded.get("billNumber")
         email = user_bill_number + '@lenovo.com'

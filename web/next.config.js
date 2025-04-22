@@ -22,6 +22,7 @@ const nextConfig = {
   // Configure pageExtensions to include md and mdx
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
   experimental: {
+    allowedDevOrigins: ['xtest.lenovo.com'],
   },
   // fix all before production. Now it slow the develop speed.
   eslint: {

@@ -233,18 +233,18 @@ class AccountService:
         is_setup: Optional[bool] = False,
     ) -> Account:
         """create account"""
-        if not FeatureService.get_system_features().is_allow_register and not is_setup:
-            from controllers.console.error import AccountNotFound
+        # if not FeatureService.get_system_features().is_allow_register and not is_setup:
+        #     from controllers.console.error import AccountNotFound
 
-            raise AccountNotFound()
+        #     raise AccountNotFound()
 
-        if dify_config.BILLING_ENABLED and BillingService.is_email_in_freeze(email):
-            raise AccountRegisterError(
-                description=(
-                    "This email account has been deleted within the past "
-                    "30 days and is temporarily unavailable for new account registration"
-                )
-            )
+        # if dify_config.BILLING_ENABLED and BillingService.is_email_in_freeze(email):
+        #     raise AccountRegisterError(
+        #         description=(
+        #             "This email account has been deleted within the past "
+        #             "30 days and is temporarily unavailable for new account registration"
+        #         )
+        #     )
 
         account = Account()
         account.email = email
@@ -638,8 +638,8 @@ class TenantService:
             return
 
         """Create owner tenant if not exist"""
-        if not FeatureService.get_system_features().is_allow_create_workspace and not is_setup:
-            raise WorkSpaceNotAllowedCreateError()
+        # if not FeatureService.get_system_features().is_allow_create_workspace and not is_setup:
+        #     raise WorkSpaceNotAllowedCreateError()
 
         if name:
             tenant = TenantService.create_tenant(name=name, is_setup=is_setup)
