@@ -109,8 +109,9 @@ class LoginWithTokenApi(Resource):
         args = parser.parse_args()
         token = args["token"]
         decoded = PassportService().verify(token, dify_config.XTEST_JWT_SECRET_KEY)
-        email = decoded.get("email")
-        name = decoded.get("user_bill_number")        
+        user_bill_number = decoded.get("billNumber")
+        email = user_bill_number + '@lenovo.com'
+        name = user_bill_number      
         account = AccountService.load_user_by_email(email)
         # create account if not exists
         if not account:
@@ -118,6 +119,7 @@ class LoginWithTokenApi(Resource):
             # create personal workspace
             TenantService.create_owner_tenant_if_not_exist(account=account)    
         # add default workspace if not exists
+        # TODO: 根据用户指定默认的workspace
         defalut_workspace_names = ['CSW QA']
         tenants = TenantService.get_join_tenants(account=account)
         missing_workspace_names = lambda default, tenant_list: list(set(default) - {t.name for t in tenant_list})
@@ -135,7 +137,7 @@ class LoginWithTokenApi(Resource):
             }
 
         token_pair = AccountService.login(account=account, ip_address=extract_remote_ip(request))
-        AccountService.reset_login_error_rate_limit(args["email"])
+        AccountService.reset_login_error_rate_limit(email)
         return {"result": "success", "data": token_pair.model_dump()}
 
 
