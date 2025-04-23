@@ -874,7 +874,7 @@ class TenantService:
         )
     
     @staticmethod
-    def get_tenant_by_name(tenant_name: str) -> list[Tenant]:
+    def get_tenant_by_name(tenant_name: str) -> Tenant:
         """Get tenants whose names are in the provided list"""
         if not tenant_name:
             return []

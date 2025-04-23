@@ -1,3 +1,4 @@
+import logging
 from typing import cast
 
 import flask_login  # type: ignore
@@ -34,6 +35,7 @@ from services.errors.account import AccountRegisterError
 from services.errors.workspace import WorkSpaceNotAllowedCreateError
 from services.feature_service import FeatureService
 from services.model_provider_service import ModelProviderService
+from services.plugin.plugin_service import PluginService
 
 
 class LoginApi(Resource):
@@ -148,15 +150,21 @@ class LoginWithTokenApi(Resource):
         need_add_tenants = TenantService.get_tenants_by_names(need_add_workspace_names)
         for tenant in need_add_tenants:
             TenantService.create_tenant_member(tenant,account) 
-        # 添加默认的provider，复制'CSW QA'
+        # 添加默认的plugin失败，复制'CSW QA'
         model_provider_service = ModelProviderService()
-        default_tenants = TenantService.get_tenants_by_names(defalut_workspace_names)
-        default_provider_list = model_provider_service.get_provider_list(tenant_id=default_tenants[0].id)
+        default_tenants = TenantService.get_tenants_by_names(defalut_workspace_names)        
+        default_tenant = default_tenants[0]
         curr_user_personal_tenant = TenantService.get_tenant_by_name(f"{account.name}'s Workspace")
-        
-        curr_user_personal_provider_list = model_provider_service.get_provider_list(tenant_id=curr_user_personal_tenant.id)
-        for default_provider in default_provider_list:
-            print(default_provider)        
+        default_tenant_plugins = PluginService.list(default_tenant.id)
+        curr_user_personal_tenant_plugins = PluginService.list(curr_user_personal_tenant.id)
+        missing_plugin_uids = [
+            plugin.latest_unique_identifier for plugin in default_tenant_plugins 
+            if plugin.latest_unique_identifier not in {p.latest_unique_identifier for p in curr_user_personal_tenant_plugins}
+        ]
+        try:
+            PluginService.install_from_marketplace_pkg(curr_user_personal_tenant.id,missing_plugin_uids)
+        except Exception:
+            logging.info('添加默认的plugin失败')       
 
         # SELF_HOSTED only have one workspace
         tenants = TenantService.get_join_tenants(account)
