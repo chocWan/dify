@@ -47,6 +47,7 @@ class IndexingRunner:
         self.model_manager = ModelManager()
 
     def run(self, dataset_documents: list[DatasetDocument]):
+        print("666666")
         """Run the indexing process."""
         for dataset_document in dataset_documents:
             try:
