@@ -6,22 +6,13 @@ import { useContext, useContextSelector } from 'use-context-selector'
 import {
   RiAccountCircleLine,
   RiArrowRightUpLine,
-  RiBookOpenLine,
-  RiGithubLine,
   RiGraduationCapFill,
-  RiInformation2Line,
   RiLogoutBoxRLine,
-  RiMap2Line,
   RiSettings3Line,
-  RiStarLine,
 } from '@remixicon/react'
 import Link from 'next/link'
 import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react'
-import Indicator from '../indicator'
 import AccountAbout from '../account-about'
-import GithubStar from '../github-star'
-import Support from './support'
-import Compliance from './compliance'
 import PremiumBadge from '@/app/components/base/premium-badge'
 import I18n from '@/context/i18n'
 import Avatar from '@/app/components/base/avatar'
@@ -29,9 +20,6 @@ import { logout } from '@/service/common'
 import AppContext, { useAppContext } from '@/context/app-context'
 import { useProviderContext } from '@/context/provider-context'
 import { useModalContext } from '@/context/modal-context'
-import { LanguagesSupported } from '@/i18n/language'
-import { LicenseStatus } from '@/types/feature'
-import { IS_CLOUD_EDITION } from '@/config'
 import cn from '@/utils/classnames'
 
 export default function AppSelector() {
@@ -120,13 +108,13 @@ export default function AppSelector() {
                     <MenuItem>
                       <div className={cn(itemClassName,
                         'data-[active]:bg-state-base-hover',
-                      )} onClick={() => setShowAccountSettingModal({ payload: 'members' })}>
+                      )} onClick={() => setShowAccountSettingModal({ payload: 'provider' })}>
                         <RiSettings3Line className='size-4 shrink-0 text-text-tertiary' />
                         <div className='system-md-regular grow px-1 text-text-secondary'>{t('common.userProfile.settings')}</div>
                       </div>
                     </MenuItem>
                   </div>
-                  <div className='p-1'>
+                  {/* <div className='p-1'>
                     <MenuItem>
                       <Link
                         className={cn(itemClassName, 'group justify-between',
@@ -143,8 +131,8 @@ export default function AppSelector() {
                     </MenuItem>
                     <Support />
                     {IS_CLOUD_EDITION && isCurrentWorkspaceOwner && <Compliance />}
-                  </div>
-                  <div className='p-1'>
+                  </div> */}
+                  {/* <div className='p-1'>
                     <MenuItem>
                       <Link
                         className={cn(itemClassName, 'group justify-between',
@@ -188,7 +176,7 @@ export default function AppSelector() {
                         </MenuItem>
                       )
                     }
-                  </div>
+                  </div> */}
                   <MenuItem>
                     <div className='p-1' onClick={() => handleLogout()}>
                       <div

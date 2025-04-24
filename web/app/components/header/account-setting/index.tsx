@@ -5,16 +5,6 @@ import {
   RiBrain2Fill,
   RiBrain2Line,
   RiCloseLine,
-  RiColorFilterFill,
-  RiColorFilterLine,
-  RiDatabase2Fill,
-  RiDatabase2Line,
-  RiGroup2Fill,
-  RiGroup2Line,
-  RiMoneyDollarCircleFill,
-  RiMoneyDollarCircleLine,
-  RiPuzzle2Fill,
-  RiPuzzle2Line,
   RiTranslate2,
 } from '@remixicon/react'
 import Button from '../../base/button'
@@ -68,38 +58,38 @@ export default function AccountSetting({
         icon: <RiBrain2Line className={iconClassName} />,
         activeIcon: <RiBrain2Fill className={iconClassName} />,
       },
-      {
-        key: 'members',
-        name: t('common.settings.members'),
-        icon: <RiGroup2Line className={iconClassName} />,
-        activeIcon: <RiGroup2Fill className={iconClassName} />,
-      },
-      {
-        // Use key false to hide this item
-        key: enableBilling ? 'billing' : false,
-        name: t('common.settings.billing'),
-        description: t('billing.plansCommon.receiptInfo'),
-        icon: <RiMoneyDollarCircleLine className={iconClassName} />,
-        activeIcon: <RiMoneyDollarCircleFill className={iconClassName} />,
-      },
-      {
-        key: 'data-source',
-        name: t('common.settings.dataSource'),
-        icon: <RiDatabase2Line className={iconClassName} />,
-        activeIcon: <RiDatabase2Fill className={iconClassName} />,
-      },
-      {
-        key: 'api-based-extension',
-        name: t('common.settings.apiBasedExtension'),
-        icon: <RiPuzzle2Line className={iconClassName} />,
-        activeIcon: <RiPuzzle2Fill className={iconClassName} />,
-      },
-      {
-        key: (enableReplaceWebAppLogo || enableBilling) ? 'custom' : false,
-        name: t('custom.custom'),
-        icon: <RiColorFilterLine className={iconClassName} />,
-        activeIcon: <RiColorFilterFill className={iconClassName} />,
-      },
+      // {
+      //   key: 'members',
+      //   name: t('common.settings.members'),
+      //   icon: <RiGroup2Line className={iconClassName} />,
+      //   activeIcon: <RiGroup2Fill className={iconClassName} />,
+      // },
+      // {
+      //   // Use key false to hide this item
+      //   key: enableBilling ? 'billing' : false,
+      //   name: t('common.settings.billing'),
+      //   description: t('billing.plansCommon.receiptInfo'),
+      //   icon: <RiMoneyDollarCircleLine className={iconClassName} />,
+      //   activeIcon: <RiMoneyDollarCircleFill className={iconClassName} />,
+      // },
+      // {
+      //   key: 'data-source',
+      //   name: t('common.settings.dataSource'),
+      //   icon: <RiDatabase2Line className={iconClassName} />,
+      //   activeIcon: <RiDatabase2Fill className={iconClassName} />,
+      // },
+      // {
+      //   key: 'api-based-extension',
+      //   name: t('common.settings.apiBasedExtension'),
+      //   icon: <RiPuzzle2Line className={iconClassName} />,
+      //   activeIcon: <RiPuzzle2Fill className={iconClassName} />,
+      // },
+      // {
+      //   key: (enableReplaceWebAppLogo || enableBilling) ? 'custom' : false,
+      //   name: t('custom.custom'),
+      //   icon: <RiColorFilterLine className={iconClassName} />,
+      //   activeIcon: <RiColorFilterFill className={iconClassName} />,
+      // },
     ].filter(item => !!item.key) as GroupItem[]
   })()
 

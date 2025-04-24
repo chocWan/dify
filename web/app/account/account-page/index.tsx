@@ -158,9 +158,9 @@ export default function AccountPage() {
           <div className='system-sm-regular flex-1 rounded-lg bg-components-input-bg-normal p-2 text-components-input-text-filled '>
             <span className='pl-1'>{userProfile.name}</span>
           </div>
-          <div className='system-sm-medium cursor-pointer rounded-lg bg-components-button-tertiary-bg px-3 py-2 text-components-button-tertiary-text' onClick={handleEditName}>
+          {/* <div className='system-sm-medium cursor-pointer rounded-lg bg-components-button-tertiary-bg px-3 py-2 text-components-button-tertiary-text' onClick={handleEditName}>
             {t('common.operation.edit')}
-          </div>
+          </div> */}
         </div>
       </div>
       <div className='mb-8'>
@@ -171,7 +171,7 @@ export default function AccountPage() {
           </div>
         </div>
       </div>
-      {
+      {/* {
         systemFeatures.enable_email_password_login && (
           <div className='mb-8 flex justify-between gap-2'>
             <div>
@@ -181,7 +181,7 @@ export default function AccountPage() {
             <Button onClick={() => setEditPasswordModalVisible(true)}>{userProfile.is_password_set ? t('common.account.resetPassword') : t('common.account.setPassword')}</Button>
           </div>
         )
-      }
+      } */}
       <div className='mb-6 border-[1px] border-divider-subtle' />
       <div className='mb-8'>
         <div className={titleClassName}>{t('common.account.langGeniusAccount')}</div>
