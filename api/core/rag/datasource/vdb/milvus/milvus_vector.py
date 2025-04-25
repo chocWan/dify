@@ -30,7 +30,7 @@ class MilvusConfig(BaseModel):
     user: str  # Username for authentication
     password: str  # Password for authentication
     batch_size: int = 100  # Batch size for operations
-    database: str = "default"  # Database name
+    database: str = "dify"  # Database name
     enable_hybrid_search: bool = False  # Flag to enable hybrid search
 
     @model_validator(mode="before")
@@ -353,7 +353,7 @@ class MilvusVector(BaseVector):
         """
         Initialize and return a Milvus client.
         """
-        client = MilvusClient(uri=config.uri, user=config.user, password=config.password, db_name=config.database)
+        client = MilvusClient(uri=config.uri, user=config.user, password=config.password, db_name=config.database,timeout=20)
         return client
 
 

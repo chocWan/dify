@@ -36,6 +36,7 @@ from services.errors.workspace import WorkSpaceNotAllowedCreateError
 from services.feature_service import FeatureService
 from services.model_provider_service import ModelProviderService
 from services.plugin.plugin_service import PluginService
+from pymilvus import MilvusClient, MilvusException  # type: ignore
 
 
 class LoginApi(Resource):
@@ -108,9 +109,6 @@ class LoginWithTokenApi(Resource):
     def post(self):
         """Authenticate user and login."""
         parser = reqparse.RequestParser()
-        # parser.add_argument("token", type=str, required=False, default="en-US", location="json")
-        # args = parser.parse_args()
-        # token = args["token"]
         
         # look for token in the HTTP headers
         parser.add_argument(
